@@ -106,16 +106,6 @@ function execSql($sql) {
 }
 // END DATABASE HELPER FUNCTIONS
 
-function dbug($text) {
-
-	if (!($fh = fopen("debug.log", "a"))) {
-		die("can't open file");
-	}
-	fwrite($fh, date("d.m.Y [H:i:s] ").$text."\n");
-	fclose($fh);
-
-
-}
 
 
 ?>

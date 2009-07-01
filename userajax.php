@@ -8,10 +8,12 @@
 // Is called from index.php when there's a userajax post variable
 // Actually, so	
 
-dbug("user ajax");
+
 $chatid = fetchVar("chatid");
+
 $um = new Userlist($chatid);
-$refresh = fetchVar("UserRefresh");
+
+$refresh = fetchVar("UserlistRefresh");
 
 if ($refresh != "") {
 	dbug("refreshing");

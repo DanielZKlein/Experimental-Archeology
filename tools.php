@@ -1,37 +1,55 @@
 <?php
-function array_concat() {
-	$vars = func_get_args();
-    $array = array();
-    foreach ($vars as $var) {
-		if (is_array($var)) {
-			foreach ($var as $val) {$array[] = $val;}
-		} else {
-			$array[] = $var;
-		}
-    }
-    return $array;
+
+function dbug($text, $showbt = false) {
+
+	if ($showbt) {
+		ob_start();
+		var_dump(debug_backtrace());
+		$bt = ob_get_contents();
+		ob_end_clean();
 	}
+	if (!($fh = fopen("debug.log", "a"))) {
+		die("can't open file");
+	}
+	fwrite($fh, date("d.m.Y [H:i:s] ").$text."\n");
+	if ($showbt) {
+		fwrite($fh, $bt."\n\n");
+	}
+	fclose($fh);
+}
 
 function array_dump($array) {
 
-	$rv = "{ ";
-	$firstrun = true;
-	foreach ($array as $key => $value) {
-		if (!$firstrun) {
-			$rv .= ", ";
-		} else {
-			$firstrun = false;
-		}
-		
-		$rv .= $key." : ";
-		if (is_array($value)) {
-			$rv .= array_dump($value);
-		} else {
-			$rv .= $value;
-		}
-	}
-	$rv .= " }";
-	return $rv;	
+	ob_start();
+	var_dump($array);
+	$rv = ob_get_contents();
+	ob_end_clean();
+	return $rv;
 }
+
+function fetchVar($varname) {
+	// fetches var from either POST or GET. GET overwrites POST
+
+	if (isset($_GET[$varname])) {
+		return $_GET[$varname];
+	} 
+	if (isset($_POST[$varname])) {
+		return $_POST[$varname];
+	}
+	return "";
+}
+
+function getLogin() {
+	// for now just looking in post/get variables. Eventually include cookies, sessions?
+	return fetchVar("login");
+}
+
+function getPw() {
+	// for now just looking in post/get variables. Eventually include cookies, sessions?
+	return fetchVar("pw");
+}
+
+
+
 	?>
 

@@ -1,13 +1,12 @@
 // CHAT.js
 chatQueue = ""; // STRING of chat lines received from PHP, not yet added to chat
 refreshVars["chatlast"] = -1;
-refreshes.push("ChatRefresh");
-ajaxOpts["chatajax"] = "enabled";
+modules.push("Chat");
 
 function chatSubmit() {
 	
 	chattext = $("#chatbox").val();
-	shit({"chatline" : chattext});
+	shit({"ChatLine" : chattext});
 	flush();
 	$("#chatbox").val("");
 	return false;

@@ -12,27 +12,6 @@ function __autoload($class_name) {
 require_once("db.php");
 //dbug("NEW INDEX------------------------------------");
 
-function fetchVar($varname) {
-	// fetches var from either POST or GET. GET overwrites POST
-
-	if (isset($_GET[$varname])) {
-		return $_GET[$varname];
-	} 
-	if (isset($_POST[$varname])) {
-		return $_POST[$varname];
-	}
-	return "";
-}
-
-function getLogin() {
-	// for now just looking in post/get variables. Eventually include cookies, sessions?
-	return fetchVar("login");
-}
-
-function getPw() {
-	// for now just looking in post/get variables. Eventually include cookies, sessions?
-	return fetchVar("pw");
-}
 
 
 $login = getLogin();
@@ -79,27 +58,16 @@ if ($ajax == "") {
 }
 
 // AJAX CALL! Find out what ajax script we need to call (can be many) and call them one after the other
-dbug("AJAX CALL! Post is ".array_dump($_POST));
+//dbug("AJAX CALL! Post is ".array_dump($_POST));
 
-// CHAT
-$chat = fetchVar("chatajax");
-if ($chat != "") {
-	// CHAT CALLED
-	require_once("chatajax.php");
+extract($_POST);
+
+if (isset($ChatAjax)) {
+	new Chat(); // yes, object creation triggers execution. It's good to be bad.
 }
 
-// GAME
-$game = fetchVar("gameajax");
-if ($game != "") {
-	// GAME CALLED
-	require_once("gameajax.php");
-}
-
-// USERLIST
-$user = fetchVar("userajax");
-if ($user != "") {
-	// USERLIST MODULE CALLED
-	require_once("userajax.php");
+if (isset($UserlistAjax)) {
+	new Userlist();
 }
 
 ?>

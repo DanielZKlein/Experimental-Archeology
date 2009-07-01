@@ -4,6 +4,7 @@
 
 class User {
 
+
 	public $id;
 	
 	function __construct($id) {

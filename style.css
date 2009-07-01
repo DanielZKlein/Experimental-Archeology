@@ -37,7 +37,6 @@ body {
 	height: 486px;
 	position: relative;
 	padding: 0px;
-	//background-image: url(world1024x486.png);
 	background-image:url(hugeworld.png);
 }
 
@@ -133,12 +132,13 @@ body {
 	
 }
 
-#tempdiv {
+#debugdiv {
+	margin-top: 50px;
 	border: 1px solid red;
 	width: 800px;
 	height: 400px;
 	overflow: scroll;
-	display: none;
+	
 }
 
 span {
