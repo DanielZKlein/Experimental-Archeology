@@ -1,0 +1,24 @@
+EA UI design:
+
+Necessary UI elements:
+- The Game map
+
+-- City markers
+--- Right clicking a city reveals the list of commands available here
+--- TODO: visual distinction between cities that have and cities that do not have commands available
+
+-- Player markers
+--- Question: should rightclicking a player marker do anything? I'd rather keep all commands in one place, and even if there are multiple players to attack in the same city, we can reflect that through the city commands: Attack Fasih, Attack Pascal, etc
+
+-- Artifact markers
+
+
+- Round indicator
+- Is it my turn?
+- Who is playing?
+- Money
+- AP
+- End round button
+- Cards you own
+- The narration engine
+
