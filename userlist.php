@@ -5,10 +5,10 @@
 
 class Userlist extends Ajaxmodule{
 
-	protected $awaySeconds = 30; // how many seconds before user is flagged as away to frontend
-	protected $offlineSeconds = 300;
+	public $awaySeconds = 30; // how many seconds before user is flagged as away to frontend
+	public $offlineSeconds = 300;
 	public $users;
-	protected $id;
+	public $id;
 
 	function __construct($execute = true) {
 	
@@ -19,10 +19,10 @@ class Userlist extends Ajaxmodule{
 		// else.
 		// Profit.
 		parent::__construct(); 
+		$chatid = fetchVar("userlistid");
+		$this->id = $chatid;
 		$tempchat = new Chat($chatid, false); // currently every userlist is tied to a chat.
 		$this->users = $tempchat->users;
-		$chatid = fetchVar("chatid");
-		$this->id = $chatid;
 		if ($execute) {
 			$this->doStuff();
 		}
@@ -39,6 +39,10 @@ class Userlist extends Ajaxmodule{
 			$now = time();
 			$name = $tu->get("login");
 			$timestamp = $tu->get("lastping");
+			$focus = $tu->get("focus");
+			if ($focus == "0") {
+				$name = "(".$name.")";
+			}
 			$formateddate = date("M jS Y, H:i:s", $timestamp);
 			if ($now - $timestamp < $this->awaySeconds) {
 				$status = "online";

@@ -12,6 +12,7 @@ if (!isset($theVariableFromIndex)) {
 require_once("EAheader.php");
 ?>
 <input type=button value="Stop AJAX refreshes" id="stopajaxbutton">
+<input type=button value="Test button" id="testbutton">
 <?php
 require_once($showpage);
 ?>

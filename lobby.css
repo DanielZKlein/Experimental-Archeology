@@ -22,7 +22,7 @@ width: 100%;
 overflow: auto;
 }
 
-#chatwrapper {
+#lobbychatwrapper {
 height: 30%;
 width: 85%;
 float: left;
@@ -30,14 +30,14 @@ border: 0px none;
 overflow: none;
 }
 
-#chatarea {
+#lobbychatarea {
 width: 100%;
 height: 99%;
 overflow: auto;
 font-family: "Courier New";
 font-size: 12px;
 }
-#chatbox {
+#lobbychatbox {
 width: 100%;
 font-family: "Courier New";
 font-size: 12px;

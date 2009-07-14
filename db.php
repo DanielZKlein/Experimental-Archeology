@@ -11,7 +11,7 @@ if (PEAR::isError($con)) {
 // BEGIN DATABASE HELPER FUNCTIONS
 
 
-function getRow($row, $table, $query) {
+function getRow($row, $table, $query = "TRUE") {
 
 	$r = getResult("select ".$row." from ".$table." where ".$query);
 	$rv = array();
@@ -25,14 +25,14 @@ function getRow($row, $table, $query) {
 
 }
 
-function getOneThing($thing, $table, $conditions) {
+function getOneThing($thing, $table, $conditions = "TRUE") {
 
 	$r = getFirstRow("select ".$thing." from ".$table. " where ".$conditions);
 	return $r[$thing];
 
 }
 
-function getFirstRow($query) {
+function getFirstRow($query = "TRUE") {
 
 	$r = getResult($query);
 	$row = $r->fetchRow(MDB2_FETCHMODE_ASSOC);
@@ -78,7 +78,7 @@ function dumpTableIntoJavascript($table, $jsarray, $additionalstring="") {
 
 }
 
-function getResult($query) {
+function getResult($query = "TRUE") {
 	// for multi row queries
 	
 	global $con;

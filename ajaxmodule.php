@@ -13,11 +13,11 @@
 
 class Ajaxmodule {
 
-	protected $cacheTableName; // this is black magic. Look, a weather balloon!
-	protected $firstCall = false; // is this the first ajax call to this function? Must be tracked 
+	public $cacheTableName; // this is black magic. Look, a weather balloon!
+	public $firstCall = false; // is this the first ajax call to this function? Must be tracked 
 								 // through JS
-	protected $sys; // copy of the system object for ease of use. TODO: is this a performance bottleneck?
-	protected $execSuffixes = array("Refresh" => "printStatus");
+	public $sys; // copy of the system object for ease of use. TODO: is this a performance bottleneck?
+	public $execSuffixes = array("Refresh" => "printStatus");
 	
 	function __construct() {
 	
@@ -46,17 +46,22 @@ class Ajaxmodule {
 		// If oldcrc != newcrc, the crc has changed.
 		// Update it. Output the string.
 		// If oldcrc == newcrc, nothing changed. However, if this is firstcall, output anyway.
-		
+		//dbug("in output");
 		if ($oldcrc == "") {
+			//dbug("no oldcrc");
 			execSql("INSERT INTO $ct (userid, identifier, crc) values ($ui, '$identifier', $newcrc)");
 			print $text;
 		} else if ($oldcrc != $newcrc) {
+			//dbug("different oldcrc");
 			execSql("UPDATE $ct set crc=$newcrc where userid=$ui and identifier='$identifier'");
 			print $text;
 		} else {
 			// oldcrc == newcrc
 			if ($this->firstCall) {
+				//dbug("firstcall: ".$text);
 				print $text;
+			} else {
+				//dbug(get_class($this).", identifier: ".$identifier." reports no change");
 			}
 		}
 	}
@@ -70,8 +75,10 @@ class Ajaxmodule {
 		
 		foreach ($this->execSuffixes as $suffix => $myfunc) {
 			$varname = get_class($this).$suffix;
+			//dbug("looking for ".$varname);
 			$var = fetchVar($varname);
 			if ($var) {
+				//dbug("found! Evaling ".$myfunc);
 				eval("\$this->".$myfunc."();"); // oh great satan
 			}
 		}

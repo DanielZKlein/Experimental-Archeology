@@ -1,9 +1,11 @@
 modules = new Array();
+readyFunctions = new Array(); // these function calls are evaled on script ready
 refreshVars = new Array(); // stuff that isn't a refresh by itself but that should be sent with refreshes. Ugh. This is ugly. REDO!
-ajaxOpts = new Object();
+ajaxOpts = new Object(); // AJAXOPTS go out with EVERY ajax call, refresh or submit.
 ajaxOpts["login"] = myLogin;
 ajaxOpts["pw"] = myPW;
 ajaxOpts["ajax"] = "x";
+ajaxOpts["windowfocus"] = "yes";
 ajaxUrl = "index.php";
 userRefresh = new Array(); // uR["Daniel"] = {"timestamp":"Sun Jun 14 15:15", "status":"online"} etc
 ajaxNonPersistents = new Object(); // object fits better since we won't need to push. These are the NONPERSISTENTS. AjaxOpts that should be sent with every single call, always, without exceptions, should be defined directly as ajaxOpts; everything else goes in here.
@@ -18,9 +20,11 @@ stopItAlready = false; // set to true to stop ajax refreshes -- THIS IS FOR DEBU
 
 firstRun = true; // is this the very first time you send a refresh request out per Ajax? If so,
 				 // mark all ajax modules involved as <modulename>firstcall (passed on to ajaxmodule.php)
-						
+pulse = 200;
+				 
 function shit(NPs) {
 
+	// shit be nonpers
 	// Adds non persistent variables both to ajaxOpts and to ajaxNonPersistents.
 	// I couldn't resist the expressive function naming. Look for shit's friends "flush" and "wipe"
 
@@ -64,6 +68,18 @@ function overwriteDiv(divid, html) {
 	$("#"+divid).html(html);
 }
 
+function addTableRow(tableid, rowhtml) {
+	// simply add the html for the given trs to a table
+	
+	$("#"+tableid+" tr:last").after(rowhtml);
+
+}
+
+function resetTable(tableid) {
+	// this assumes that there is a table with a first tr that serves as header; delete every other tr
+	$("#"+tableid+" tr:first").nextAll("tr").remove();
+
+}
 
 function ajaxCallback(cb) {
 
@@ -79,10 +95,8 @@ function ajaxCallback(cb) {
 		waitingForRefresh = false;
 	} 
 	
-	setTimeout("heartBeat();", 200);
+	setTimeout("heartBeat();", pulse);
 }
-
-
 
 function heartBeat() {
 	if (stopItAlready) { 
@@ -163,9 +177,59 @@ function objectDump(o) {
 
 }
 
+function loseFocus() {
+	pulse = 2000;
+	ajaxOpts["windowfocus"] = "no";
+}
+
+function gainFocus() {
+	pulse = 200;
+	ajaxOpts["windowfocus"] = "yes";
+}
+
+function closeWindow() {
+
+	ajaxOpts["windowfocus"] = "no";
+	ajaxOpts["closingwindow"] = "yes";
+	flush();
+
+}
+
+function newPage(optsObject) {
+
+	// constructs a call with optsArray to serve up a new page
+	
+	curLoc = document.location;
+	expr = /(.*?)\?/g;
+	recheck = expr.exec(curLoc);
+	myLoc = recheck ? recheck[1] : curLoc;
+	newLoc = myLoc + "?";
+	for (index in optsObject) {
+	
+		console.log("index is "+index+" and value is "+optsObject[index]);
+		newLoc += index+"="+optsObject[index]+"&";
+	
+	}
+	newLoc = newLoc.substr(0, newLoc.length-1);
+	document.location = newLoc;
+
+}
+
 $(function() {
-	heartBeat(); 
+	//alert("ready function");
 	console.log("hier bin ich");
 	$("#stopajaxbutton").bind("click", function (e) { console.log("Stopping ajax calls"); stopItAlready = true; });
+	window.onblur = loseFocus;
+	window.onfocus = gainFocus;
+	window.onbeforeunload = closeWindow;
+	$("#testbutton").bind("click", function (e) { newPage({"login":"daniel", "yourmom":"haha"}); });
+	for (index in readyFunctions) {
+
+		eval(readyFunctions[index]);
+	
+	}
+	heartBeat(); 
+	
+
 	
 });

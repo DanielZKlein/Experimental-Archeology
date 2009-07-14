@@ -21,10 +21,20 @@ class Gamesys {
 		$r = getFirstRow("select * from user where login='".$login."'");
 		if ($r['pw'] == $pw) {
 			$this->userId = $r['id'];
+			//dbug("during construction of sys object, user id is ".$this->userId);
 			$this->userPw = $pw;
 			$this->userLogin = $login;
 			$this->user = new User($this->userId);
+			$focus = fetchVar("windowfocus");
+			if ($focus == "no") {
 			
+				$this->user->set("focus", 0);
+			
+			} else {
+			
+				$this->user->set("focus", 1);
+				
+			}
 			return true;
 		} else {
 			return false;

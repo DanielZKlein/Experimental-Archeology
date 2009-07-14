@@ -10,7 +10,7 @@ function __autoload($class_name) {
 // EACH AJAX PHP SCRIPT will then run through and generate output (or buffer it somewhere first?).
 
 require_once("db.php");
-//dbug("NEW INDEX------------------------------------");
+dbug("NEW INDEX------------------------------------");
 
 
 
@@ -42,7 +42,7 @@ $theVariableFromIndex = "poopsie";
 // **
 //AJAX / CONSTRUCTION FORK
 // **
-
+//dbug("index");
 if ($ajax == "") {
 	dbug("CONSTRUCTION");
 	// CONSTRUCTION CALL. See if we're going somewhere, then serve up the current page.
@@ -63,11 +63,29 @@ if ($ajax == "") {
 extract($_POST);
 
 if (isset($ChatAjax)) {
-	new Chat(); // yes, object creation triggers execution. It's good to be bad.
+	// until we think of a less ugly way to do this, let's split up the string with the ids 
+	// here and make a new chat object for each one of them
+	$ids = fetchVar("chatrefreshids");
+	$ids = explode("|", $ids);
+	foreach ($ids as $id) {
+	
+		if ($id == "") {
+			continue;
+		}
+		//dbug("in that new loop, id is '".$id."'");
+		new Chat($id);
+	
+	}
+	//new Chat(); // yes, object creation triggers execution. It's good to be bad.
 }
 
 if (isset($UserlistAjax)) {
+	//dbug("userlist");
 	new Userlist();
+}
+
+if (isset($LobbyAjax)) {
+	new Lobby();
 }
 
 ?>

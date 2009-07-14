@@ -10,6 +10,6 @@ myLogin = "<?=$login?>";
 myPW = "<?=$pw?>";
 </script>
 <script type="text/javascript" src="common.js"></script>
-<!-- common,js needs myLogin/myPW, so always call it after declaring those-->
+<!-- common.js needs myLogin/myPW, so always call it after declaring those-->
 
 </head>

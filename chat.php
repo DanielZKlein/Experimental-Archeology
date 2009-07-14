@@ -10,17 +10,19 @@ class Chat extends Ajaxmodule {
 
 	public $id;
 	public $users;
-	protected $outputBuffer;
+	public $outputBuffer;
 	
 	function __construct($chatid = -1, $execute = true) {
 	
 		parent::__construct();
+		//dbug("constructing chat ".$chatid);
 		
 		if ($chatid == -1) {
 			$this->id = fetchVar("chatid");
 		} else {
 			$this->id = $chatid;
 		}
+		//dbug("about to fill users; this id is ".$this->id);
 		$this->users = getRow("userid", "chattouserid", "chatid = ".$this->id);
 		$this->execSuffixes = $this->execSuffixes + array("Line" => "addLine");
 		if ($execute) {
@@ -44,12 +46,12 @@ class Chat extends Ajaxmodule {
 	function printStatus($last = -1, $first = -1) {
 	
 		if ($last == -1) {
-			$last = fetchVar("chatlast");
+			$last = fetchVar("chat".$this->id."last");
 		}
 		if ($first == -1) {
-			$first = fetchVar("chatfirst"); // FIRST LINE to display in case you don't want to see everything. Might be swapped out for an update length variable at some point
+			$first = fetchVar("chat".$this->id."first"); // FIRST LINE to display in case you don't want to see everything. Might be swapped out for an update length variable at some point
 		}
-
+		
 		list($returntext, $lastid) = $this->getRefresh($last, $first);
 		if ($returntext != "") {
 			$this->setText($returntext);
@@ -81,7 +83,7 @@ class Chat extends Ajaxmodule {
 			$lastid = $r['id'];
 		
 		}
-		$returntext = preg_replace('/\'/', "&#39;", $returntext);
+		$returntext = apostrofuck($returntext);
 //		dbug($returntext);
 		$ra = array($returntext, $lastid);
 		return $ra;
@@ -90,14 +92,19 @@ class Chat extends Ajaxmodule {
 	function setText($text) {
 		// makes JS set new text
 		
-		$this->outputBuffer .= "takeChatRefresh('$text');\n";
+		$this->outputBuffer .= "takeChatRefresh(".$this->id.", '$text');\n";
 	}
 
 	function setLastId($id) {
-		$this->outputBuffer .= "setChatLastId($id);\n";
+		$this->outputBuffer .= "setChatLastId(".$this->id.", $id);\n";
 	}
 
 	function addLine() {
+		$tempid = fetchVar("chatid");
+		if ($tempid != $this->id) {
+			dbug("we are in chat object for ".$this->id." and we've received a line for chat ".$tempid);
+			return;
+		}
 		$line = fetchVar("ChatLine");
 		$myid = $this->sys->user->get("id");
 		$this->sys->user->ping();

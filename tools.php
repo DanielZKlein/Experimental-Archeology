@@ -27,6 +27,14 @@ function array_dump($array) {
 	return $rv;
 }
 
+function apostrofuck($text) {
+
+	// Fucks apostrophes. For great sanity!
+	
+	return preg_replace('/\'/', "&#39;", $text);
+
+}
+
 function fetchVar($varname) {
 	// fetches var from either POST or GET. GET overwrites POST
 
